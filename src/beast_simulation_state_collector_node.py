@@ -44,74 +44,74 @@ class beast_simulation_state_collector:
         
         self.startSim()
         
-        '''      
-        self.door_pub = rospy.Publisher('/madrob/preprocessed_data/passage/door',
-                                           Float64, queue_size=1)
+              
+#        self.door_pub = rospy.Publisher('/madrob/preprocessed_data/passage/door',
+#                                           Float64, queue_size=1)
                                            
-        self.door_handle_pub = rospy.Publisher('/madrob/preprocessed_data/passage/handle',
-                                           Float64, queue_size=1)
+#        self.door_handle_pub = rospy.Publisher('/madrob/preprocessed_data/passage/handle',
+#                                           Float64, queue_size=1)
                                            
-        self.cw_left_pub = rospy.Publisher('/madrob/passage/cw_left',
-                                        Passage, queue_size=1)                             
-        self.cw_right_pub = rospy.Publisher('/madrob/passage/cw_right',
-                                        Passage, queue_size=1)        
-        self.ccw_left_pub = rospy.Publisher('/madrob/passage/ccw_left', 
-                                        Passage, queue_size=1)                             
-        self.ccw_right_pub =rospy.Publisher('/madrob/passage/ccw_right',
-                                        Passage, queue_size=1)                             
+#        self.cw_left_pub = rospy.Publisher('/madrob/passage/cw_left',
+#                                        Passage, queue_size=1)                             
+#        self.cw_right_pub = rospy.Publisher('/madrob/passage/cw_right',
+#                                        Passage, queue_size=1)        
+#        self.ccw_left_pub = rospy.Publisher('/madrob/passage/ccw_left', 
+#                                        Passage, queue_size=1)                             
+#        self.ccw_right_pub =rospy.Publisher('/madrob/passage/ccw_right',
+#                                        Passage, queue_size=1)                             
                    
 
-        self.distance_sens_front_0 = rospy.Subscriber("/sensor/base_ir_front_0", Range,
-          									   self.cw_left_callback, queue_size=1)
+#        self.distance_sens_front_0 = rospy.Subscriber("/sensor/base_ir_front_0", Range,
+#          									   self.cw_left_callback, queue_size=1)
           
-        self.distance_sens_front_1 = rospy.Subscriber("/sensor/base_ir_front_1", Range,
-          									   self.cw_left_callback, queue_size=1)
+#        self.distance_sens_front_1 = rospy.Subscriber("/sensor/base_ir_front_1", Range,
+#          									   self.cw_left_callback, queue_size=1)
 
-        self.distance_sens_front_2 = rospy.Subscriber("/sensor/base_ir_front_2", Range,
-          									   self.cw_left_callback, queue_size=1)
+#        self.distance_sens_front_2 = rospy.Subscriber("/sensor/base_ir_front_2", Range,
+#          									   self.cw_left_callback, queue_size=1)
 
-        self.distance_sens_front_3 = rospy.Subscriber("/sensor/base_ir_front_3", Range,
-          									   self.cw_left_callback, queue_size=1)
+#        self.distance_sens_front_3 = rospy.Subscriber("/sensor/base_ir_front_3", Range,
+#          									   self.cw_left_callback, queue_size=1)
           									   
 
-        self.distance_sens_front_4 = rospy.Subscriber("/sensor/base_ir_front_4", Range,
-          									   self.cw_right_callback, queue_size=1)
+#        self.distance_sens_front_4 = rospy.Subscriber("/sensor/base_ir_front_4", Range,
+#          									   self.cw_right_callback, queue_size=1)
 
-        self.distance_sens_front_5 = rospy.Subscriber("/sensor/base_ir_front_5", Range,
-          									   self.cw_right_callback, queue_size=1)
+#        self.distance_sens_front_5 = rospy.Subscriber("/sensor/base_ir_front_5", Range,
+#          									   self.cw_right_callback, queue_size=1)
 
-        self.distance_sens_front_6 = rospy.Subscriber("/sensor/base_ir_front_6", Range,
-          									   self.cw_right_callback, queue_size=1)
+#        self.distance_sens_front_6 = rospy.Subscriber("/sensor/base_ir_front_6", Range,
+#          									   self.cw_right_callback, queue_size=1)
           							
-        self.distance_sens_front_7 = rospy.Subscriber("/sensor/base_ir_front_7", Range,
-          									   self.cw_right_callback, queue_size=1)
+#        self.distance_sens_front_7 = rospy.Subscriber("/sensor/base_ir_front_7", Range,
+#          									   self.cw_right_callback, queue_size=1)
           									   
 
           									   
 
           									   
-        self.distance_sens_back_0 = rospy.Subscriber("/sensor/base_ir_back_0", Range,
-          									   self.ccw_left_callback, queue_size=1)
+#        self.distance_sens_back_0 = rospy.Subscriber("/sensor/base_ir_back_0", Range,
+#          									   self.ccw_left_callback, queue_size=1)
           
-        self.distance_sens_back_1 = rospy.Subscriber("/sensor/base_ir_back_1", Range,
-          									   self.ccw_left_callback, queue_size=1)
+#        self.distance_sens_back_1 = rospy.Subscriber("/sensor/base_ir_back_1", Range,
+#          									   self.ccw_left_callback, queue_size=1)
           									   
-        self.distance_sens_back_2 = rospy.Subscriber("/sensor/base_ir_back_2", Range,
-          									   self.ccw_left_callback, queue_size=1)
+#        self.distance_sens_back_2 = rospy.Subscriber("/sensor/base_ir_back_2", Range,
+#          									   self.ccw_left_callback, queue_size=1)
           									   
-        self.distance_sens_back_3 = rospy.Subscriber("/sensor/base_ir_back_3", Range,
-          									   self.ccw_left_callback, queue_size=1)          									   
-        self.distance_sens_back_4 = rospy.Subscriber("/sensor/base_ir_back_4", Range,
-          									   self.ccw_right_callback, queue_size=1)    
+#        self.distance_sens_back_3 = rospy.Subscriber("/sensor/base_ir_back_3", Range,
+#          									   self.ccw_left_callback, queue_size=1)          									   
+#        self.distance_sens_back_4 = rospy.Subscriber("/sensor/base_ir_back_4", Range,
+#          									   self.ccw_right_callback, queue_size=1)    
           									   
-        self.distance_sens_back_5 = rospy.Subscriber("/sensor/base_ir_back_5", Range,
-        									   self.ccw_right_callback, queue_size=1)      
+#        self.distance_sens_back_5 = rospy.Subscriber("/sensor/base_ir_back_5", Range,
+#        									   self.ccw_right_callback, queue_size=1)      
         									   
-        self.distance_sens_back_6 = rospy.Subscriber("/sensor/base_ir_back_6", Range,
-        									   self.ccw_right_callback, queue_size=1)          									   
-        self.distance_sens_back_7 = rospy.Subscriber("/sensor/base_ir_back_7", Range,
-        									   self.ccw_right_callback, queue_size=1)          							
-        '''        									   
+#        self.distance_sens_back_6 = rospy.Subscriber("/sensor/base_ir_back_6", Range,
+#        									   self.ccw_right_callback, queue_size=1)          									   
+#        self.distance_sens_back_7 = rospy.Subscriber("/sensor/base_ir_back_7", Range,
+#        									   self.ccw_right_callback, queue_size=1)          							
+
         if VERBOSE:
              print ("subcribed on sensor_distances")
           
