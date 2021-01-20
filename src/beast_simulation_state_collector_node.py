@@ -198,7 +198,7 @@ def callback(data):
     rospy.loginfo("%s is age: %d" % (data.name, data.age))
     print ("initialized")
 
-def handle_madrob_door_dummy_srv(req):  #TODO CHECK VINCENZO
+def handle_beast_door_dummy_srv(req):  #TODO CHECK VINCENZO
     print("Handled dummy service")
     return SetDoorControllerModeResponse(True, "")
 
@@ -250,7 +250,7 @@ def getHandlePosition():
 
 def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected benchmark type
     try:
-        get_benchmark_params = rospy.ServiceProxy('madrob/gui/benchmark_params', MadrobBenchmarkParams)
+        get_benchmark_params = rospy.ServiceProxy('beast/gui/benchmark_params', BeastBenchmarkParams)
     except rospy.ServiceException, e:
         print "ServiceProxy failed: %s"%e
         exit(0)
@@ -328,13 +328,13 @@ def restartSim(ebws):
 
 
 def main(args):
-     ebws =  madrob_simulation_state_collector()
+     ebws =  beast_simulation_state_collector()
      rospy.init_node('beast_simulation_state_collector', anonymous=True) #CHECK IF REMOVE 'PROVIDER'
      
      listener(ebws)
 
-     s = rospy.Service('/madrob/door/set_mode', SetDoorControllerMode, handle_madrob_door_dummy_srv) 
-     print ("service madrob/door initialized in madrob_simulation_state_collector")    
+     s = rospy.Service('/madrob/door/set_mode', SetDoorControllerMode, handle_beast_door_dummy_srv) # TODO CHANGE 
+     print ("service beast/door initialized in beast_simulation_state_collector")    
 
      try:
          talker(ebws)
