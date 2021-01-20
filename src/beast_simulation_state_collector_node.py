@@ -44,7 +44,7 @@ class beast_simulation_state_collector:
         
         self.startSim()
         
-  '''      
+        '''      
         self.door_pub = rospy.Publisher('/madrob/preprocessed_data/passage/door',
                                            Float64, queue_size=1)
                                            
@@ -111,7 +111,7 @@ class beast_simulation_state_collector:
         									   self.ccw_right_callback, queue_size=1)          									   
         self.distance_sens_back_7 = rospy.Subscriber("/sensor/base_ir_back_7", Range,
         									   self.ccw_right_callback, queue_size=1)          							
-  '''        									   
+        '''        									   
         if VERBOSE:
              print ("subcribed on sensor_distances")
           
