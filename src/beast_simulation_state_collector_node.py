@@ -180,16 +180,16 @@ def talker(ebws):
     msg = Float64()
     
     while not rospy.is_shutdown():
-        msg = getDoorAperture()
-        ebws.door_pub.publish(msg)
+        #msg = getDoorAperture()
+        #ebws.door_pub.publish(msg)
 
-        msg_handle = getHandlePosition()
-        ebws.door_handle_pub.publish(msg_handle)
+        #msg_handle = getHandlePosition()
+        #ebws.door_handle_pub.publish(msg_handle)
 
         retrieveBenchmarkConfiguration(ebws)
-        if benchmarkConfigurationHasChanged(ebws):
-            if ebws.current_door_opening_side is not None: 
-                restartSim(ebws)
+        #if benchmarkConfigurationHasChanged(ebws):
+        #    if ebws.current_door_opening_side is not None: 
+        #        restartSim(ebws)
 
         r.sleep()
 
@@ -255,9 +255,9 @@ def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected b
         print "ServiceProxy failed: %s"%e
         exit(0)
     response = get_benchmark_params()
-    ebws.current_benchmark_name = response.benchmark_type
-    ebws.current_door_opening_side = response.door_opening_side
-    ebws.current_robot_approach_side = response.robot_approach_side
+    #ebws.current_benchmark_name = response.benchmark_type
+    #ebws.current_door_opening_side = response.door_opening_side
+    #ebws.current_robot_approach_side = response.robot_approach_side
     if VERBOSE:
         print [ebws.current_benchmark_name , ebws.current_door_opening_side , ebws.current_robot_approach_side]
 
