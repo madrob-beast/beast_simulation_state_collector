@@ -42,7 +42,7 @@ class beast_simulation_state_collector:
         self.old_door_opening_side = None
         self.old_robot_approach_side = None
         
-        self.startSim()
+#        self.startSim()
         
               
 #        self.door_pub = rospy.Publisher('/madrob/preprocessed_data/passage/door',
