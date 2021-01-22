@@ -208,7 +208,7 @@ def listener(self):
     image_camera = rospy.Subscriber("sensor_msgs/Image", Image, callback)
     
 
-def getDoorAperture(): 
+def getTrolleyPosition(): 
     try:
         get_model_properties = rospy.ServiceProxy('/gazebo/get_model_properties', GetModelProperties)
     except rospy.ServiceException, e:
@@ -259,6 +259,7 @@ def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected b
     #ebws.current_door_opening_side = response.door_opening_side
     #ebws.current_robot_approach_side = response.robot_approach_side
     if VERBOSE:
+        print response
         print [ebws.current_benchmark_name , ebws.current_door_opening_side , ebws.current_robot_approach_side]
 
 
