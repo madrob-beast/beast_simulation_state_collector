@@ -259,8 +259,8 @@ def getTrolleyPosition():
         print("value of X : " + str(resp_coordinates.pose.position.x))
         print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
 
-        except rospy.ServiceException as e:
-            rospy.loginfo("Get Model State service call failed:  {0}".format(e))
+    except rospy.ServiceException as e:
+        rospy.loginfo("Get Model State service call failed:  {0}".format(e))
         
     #return joint_prop_handle.position[0]
 
