@@ -252,7 +252,7 @@ def getHandlePosition():
 def getTrolleyPosition():
     try:
         model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
-        resp_coordinates = model_coordinates('pushcart', 'link_1')
+        resp_coordinates = model_coordinates('pushcart', 'model')
         print '\n'
         print 'Status.success = ', resp_coordinates.success
         print('pushcart')
