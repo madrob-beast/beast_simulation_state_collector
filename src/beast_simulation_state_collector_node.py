@@ -255,12 +255,11 @@ def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected b
         print "ServiceProxy failed: %s"%e
         exit(0)
     response = get_benchmark_params()
-    #ebws.current_benchmark_name = response.benchmark_type
+    ebws.stiffness = response.stiffness
     #ebws.current_door_opening_side = response.door_opening_side
     #ebws.current_robot_approach_side = response.robot_approach_side
     if VERBOSE:
-        print response
-        print [ebws.current_benchmark_name , ebws.current_door_opening_side , ebws.current_robot_approach_side]
+        print ebws.stiffness
 
 
 def benchmarkConfigurationHasChanged(ebws):
