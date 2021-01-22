@@ -233,7 +233,7 @@ def getHandlePosition():
     except rospy.ServiceException, e:
         print "ServiceProxy failed: %s"%e
         exit(0)
-    model_prop = get_model_properties("door_simple")
+    model_prop = get_model_properties("pushcart")
     try:
         get_door_joint_props = rospy.ServiceProxy('/gazebo/get_joint_properties', GetJointProperties)
     except rospy.ServiceException, e:
@@ -245,7 +245,24 @@ def getHandlePosition():
     if VERBOSE: 
         print(joint_prop_handle.position[0])
         
+    getTrolleyPosition()
+        
     return joint_prop_handle.position[0]
+
+def getTrolleyPosition():
+    try:
+        model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+        resp_coordinates = model_coordinates('pushcart', 'link_1')
+        print '\n'
+        print 'Status.success = ', resp_coordinates.success
+        print('pushcart')
+        print("value of X : " + str(resp_coordinates.pose.position.x))
+        print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
+
+        except rospy.ServiceException as e:
+            rospy.loginfo("Get Model State service call failed:  {0}".format(e))
+        
+    #return joint_prop_handle.position[0]
 
 
 def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected benchmark type
