@@ -255,8 +255,7 @@ def getTrolleyPosition():
         resp_coordinates = model_coordinates('pushcart::cart_front_steer', 'chassis')
         print '\n'
         print 'Status.success = ', resp_coordinates.success
-        print('pushcart')
-        print("Pushcart pose : " + str(resp_coordinates.pose.position))
+        print("Pushcart pose \n: " + str(resp_coordinates.pose.position))
         #print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
 
     except rospy.ServiceException as e:
@@ -276,6 +275,7 @@ def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected b
     #ebws.current_door_opening_side = response.door_opening_side
     #ebws.current_robot_approach_side = response.robot_approach_side
     if VERBOSE:
+        print "trolley stiffness:"
         print ebws.stiffness
 
 
