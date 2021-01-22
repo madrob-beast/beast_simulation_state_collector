@@ -183,7 +183,7 @@ def talker(ebws):
         #msg = getDoorAperture()
         #ebws.door_pub.publish(msg)
 
-        #msg_handle = getHandlePosition()
+        msg_handle = getTrolleyPosition()
         #ebws.door_handle_pub.publish(msg_handle)
 
         retrieveBenchmarkConfiguration(ebws)
