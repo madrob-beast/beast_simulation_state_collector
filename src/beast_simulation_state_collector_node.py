@@ -273,7 +273,7 @@ def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected b
     response = get_benchmark_params()
     ebws.stiffness = response.stiffness
     if VERBOSE:
-        print "\n ---- trolley stiffness fro gui:"
+        print "\n---- trolley stiffness from gui:"
         print ebws.stiffness
 
 
