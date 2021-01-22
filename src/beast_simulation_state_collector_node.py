@@ -24,7 +24,7 @@ from eurobench_bms_msgs_and_srvs.srv import *
 
 
 
-VERBOSE=False
+VERBOSE=True
 
 class beast_simulation_state_collector:
     def __init__(self):
