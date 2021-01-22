@@ -256,8 +256,8 @@ def getTrolleyPosition():
         print '\n'
         print 'Status.success = ', resp_coordinates.success
         print('pushcart')
-        print("value of X : " + str(resp_coordinates.pose.position.x))
-        print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
+        print("Pushcart pose : " + str(resp_coordinates.pose.position))
+        #print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
 
     except rospy.ServiceException as e:
         rospy.loginfo("Get Model State service call failed:  {0}".format(e))
