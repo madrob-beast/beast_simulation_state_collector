@@ -198,9 +198,9 @@ def callback(data):
     rospy.loginfo("%s is age: %d" % (data.name, data.age))
     print ("initialized")
 
-def handle_beast_door_dummy_srv(req):  #TODO CHECK VINCENZO
+def handle_beast_trolley_dummy_srv(req):  #TODO CHECK VINCENZO
     print("Handled dummy service")
-    return SetDoorControllerModeResponse(True, "")
+    return SetStiffness.srvResponse(True, "")
 
 
 def listener(self):
@@ -333,8 +333,8 @@ def main(args):
      
      listener(ebws)
 
-     s = rospy.Service('/madrob/door/set_mode', SetDoorControllerMode, handle_beast_door_dummy_srv) # TODO CHANGE 
-     print ("service beast/door initialized in beast_simulation_state_collector")    
+     s = rospy.Service('/beast/trolley/set_stiffness', SetStiffness, handle_beast_trolley_dummy_srv) 
+     print ("service beast/trolley initialized in beast_simulation_state_collector")    
 
      try:
          talker(ebws)
