@@ -17,104 +17,43 @@ from gazebo_msgs.srv import GetModelState
 from gazebo_msgs.srv import GetModelProperties
 from gazebo_msgs.srv import GetJointProperties
 from beast_srvs.srv import *
-#from beast_msgs.msg import Passage
+from beast_msgs.msg import *
 from eurobench_bms_msgs_and_srvs.srv import *
+from sensor_msgs.msg import JointState
 
 
 
-
-
-VERBOSE=True
+VERBOSE = False
+START_SIM = False
 
 class beast_simulation_state_collector:
     def __init__(self):
-
-        self.cw_left = np.array([None, None, None, None])
-        self.cw_right = np.array([None, None, None, None]) 
-        self.ccw_left = np.array([None, None, None, None])
-        self.ccw_right = np.array([None, None, None, None])
-        
         self.current_benchmark_name = None
-        self.current_door_opening_side = None
-        self.current_robot_approach_side = None
-        
         self.old_benchmark_name = None
-        self.old_door_opening_side = None
-        self.old_robot_approach_side = None
+        self.left_position_old = 0.0
+        self.right_position_old = 0.0
+        self.left_position = 0.0
+        self.right_position = 0.0
         
-#        self.startSim()
+        self.left_vel = 0.0
+        self.right_vel = 0.0
+        self.last_time_in_sec = 0.0        
         
-              
-#        self.door_pub = rospy.Publisher('/madrob/preprocessed_data/passage/door',
-#                                           Float64, queue_size=1)
-                                           
-#        self.door_handle_pub = rospy.Publisher('/madrob/preprocessed_data/passage/handle',
-#                                           Float64, queue_size=1)
-                                           
-#        self.cw_left_pub = rospy.Publisher('/madrob/passage/cw_left',
-#                                        Passage, queue_size=1)                             
-#        self.cw_right_pub = rospy.Publisher('/madrob/passage/cw_right',
-#                                        Passage, queue_size=1)        
-#        self.ccw_left_pub = rospy.Publisher('/madrob/passage/ccw_left', 
-#                                        Passage, queue_size=1)                             
-#        self.ccw_right_pub =rospy.Publisher('/madrob/passage/ccw_right',
-#                                        Passage, queue_size=1)                             
+        self.name = ""
+        self.jointsAng = 0.0 
+        self.jointsVel = 0.0
+        
+        self.left_wheel_status_publisher = rospy.Publisher('/beast_cart/left/wheel_status',
+                                        Wheel, queue_size=1)            
+                                                         
+        self.right_wheel_status_publisher = rospy.Publisher('/beast_cart/right/wheel_status',
+                                        Wheel, queue_size=1)            
                    
-
-#        self.distance_sens_front_0 = rospy.Subscriber("/sensor/base_ir_front_0", Range,
-#          									   self.cw_left_callback, queue_size=1)
-          
-#        self.distance_sens_front_1 = rospy.Subscriber("/sensor/base_ir_front_1", Range,
-#          									   self.cw_left_callback, queue_size=1)
-
-#        self.distance_sens_front_2 = rospy.Subscriber("/sensor/base_ir_front_2", Range,
-#          									   self.cw_left_callback, queue_size=1)
-
-#        self.distance_sens_front_3 = rospy.Subscriber("/sensor/base_ir_front_3", Range,
-#          									   self.cw_left_callback, queue_size=1)
-          									   
-
-#        self.distance_sens_front_4 = rospy.Subscriber("/sensor/base_ir_front_4", Range,
-#          									   self.cw_right_callback, queue_size=1)
-
-#        self.distance_sens_front_5 = rospy.Subscriber("/sensor/base_ir_front_5", Range,
-#          									   self.cw_right_callback, queue_size=1)
-
-#        self.distance_sens_front_6 = rospy.Subscriber("/sensor/base_ir_front_6", Range,
-#          									   self.cw_right_callback, queue_size=1)
-          							
-#        self.distance_sens_front_7 = rospy.Subscriber("/sensor/base_ir_front_7", Range,
-#          									   self.cw_right_callback, queue_size=1)
-          									   
-
-          									   
-
-          									   
-#        self.distance_sens_back_0 = rospy.Subscriber("/sensor/base_ir_back_0", Range,
-#          									   self.ccw_left_callback, queue_size=1)
-          
-#        self.distance_sens_back_1 = rospy.Subscriber("/sensor/base_ir_back_1", Range,
-#          									   self.ccw_left_callback, queue_size=1)
-          									   
-#        self.distance_sens_back_2 = rospy.Subscriber("/sensor/base_ir_back_2", Range,
-#          									   self.ccw_left_callback, queue_size=1)
-          									   
-#        self.distance_sens_back_3 = rospy.Subscriber("/sensor/base_ir_back_3", Range,
-#          									   self.ccw_left_callback, queue_size=1)          									   
-#        self.distance_sens_back_4 = rospy.Subscriber("/sensor/base_ir_back_4", Range,
-#          									   self.ccw_right_callback, queue_size=1)    
-          									   
-#        self.distance_sens_back_5 = rospy.Subscriber("/sensor/base_ir_back_5", Range,
-#        									   self.ccw_right_callback, queue_size=1)      
-        									   
-#        self.distance_sens_back_6 = rospy.Subscriber("/sensor/base_ir_back_6", Range,
-#        									   self.ccw_right_callback, queue_size=1)          									   
-#        self.distance_sens_back_7 = rospy.Subscriber("/sensor/base_ir_back_7", Range,
-#        									   self.ccw_right_callback, queue_size=1)          							
-
-        if VERBOSE:
-             print ("subcribed on sensor_distances")
-          
+        self.right_wheel_status = rospy.Publisher('/beast_cart/right/wheel_status',
+                                        Handle, queue_size=1)            
+        
+        if START_SIM:
+             self.startSim()           
           
     def startSim(self):
         package = 'eurobench_reemc_cart'
@@ -128,9 +67,7 @@ class beast_simulation_state_collector:
         
         self.launch = roslaunch.parent.ROSLaunchParent(uuid, [launch_file])
         self.launch.start()
-
         
-
     def are_ranges_complete(self, ranges):
         for single_range in ranges:
             if single_range == None:
@@ -144,52 +81,65 @@ class beast_simulation_state_collector:
     def sensor_identifier(self, ros_data):
         return int(ros_data.header.frame_id[-1])%4
 
-    def publish_strips(self, tmp_ranges, ros_data, ranges_pub):
-        sensorID = self.sensor_identifier(ros_data)
-        tmp_ranges[sensorID] = ros_data
-        if (self.are_ranges_complete(tmp_ranges)):
-            msg = Passage()
-            #msg.STATUS_OK = 1
-            msg.ranges[0] = tmp_ranges[0]
-            msg.ranges[1] = tmp_ranges[1]
-            msg.ranges[2] = tmp_ranges[2]
-            msg.ranges[3] = tmp_ranges[3]
-            ranges_pub.publish(msg)
-            self.null_the_ranges(tmp_ranges)
-
-    def cw_left_callback(self, ros_data):
-        self.publish_strips(self.cw_left, ros_data, self.cw_left_pub)
-
-    def cw_right_callback(self, ros_data):
-        self.publish_strips(self.cw_right, ros_data, self.cw_right_pub)
-                
-    def ccw_left_callback(self, ros_data):
-        self.publish_strips(self.ccw_left, ros_data, self.ccw_left_pub)        
-                  
-    def ccw_right_callback(self, ros_data):
-        self.publish_strips(self.ccw_right, ros_data, self.ccw_right_pub)        
+    
+def createWheelMsgs(ebws):
+    msg_left = Wheel()
+    msg_right = Wheel()
+    
+    msg_left.braking_force = 0
+    msg_left.velocity = ebws.left_vel
+    msg_right.braking_force = 0
+    msg_right.velocity = ebws.right_vel
+    
+    return msg_left, msg_right    
 
 
+def updateWheelVelocities(ebws):
+    try:
+        get_wheel_joint_props = rospy.ServiceProxy('/gazebo/get_joint_properties', GetJointProperties)
+    except rospy.ServiceException, e:
+        print "ServiceProxy failed: %s"%e
+        exit(0)
+    if VERBOSE: print('---------- joint vel ---------')
+    joint_prop = get_wheel_joint_props('wheel_rear_left_spin')
+    if VERBOSE: print(joint_prop.position[0])
+    ebws.left_position = joint_prop.position[0]
+    
+    joint_prop = get_wheel_joint_props('wheel_rear_right_spin')
+    if VERBOSE: print(joint_prop.position[0])
+    ebws.right_position = joint_prop.position[0]
+    
+    current_time = rospy.get_time()
+    d_time = current_time - ebws.last_time_in_sec
+    if d_time == 0.0:
+        return 0.0, 0.0
+        
+    ebws.left_vel = (ebws.left_position - ebws.left_position_old)/d_time
+    ebws.right_vel = (ebws.right_position - ebws.right_position_old)/d_time    
+    
+    ebws.left_position_old = ebws.left_position     
+    ebws.right_position_old = ebws.right_position 
+    ebws.last_time_in_sec = current_time
+    
+    return ebws.left_vel, ebws.right_vel
 
+
+       
 def talker(ebws):
-    if VERBOSE:
-        print ("subcribed on sensor_distances")
-
-    r = rospy.Rate(10) #10hz
-
-    msg = Float64()
+    r = rospy.Rate(30) 
     
     while not rospy.is_shutdown():
-        #msg = getDoorAperture()
-        #ebws.door_pub.publish(msg)
-
         msg_handle = getTrolleyPosition()
-        #ebws.door_handle_pub.publish(msg_handle)
+    
+        updateWheelVelocities(ebws)
+        msg_left, msg_right = createWheelMsgs(ebws)
+        
+        ebws.left_wheel_status_publisher.publish(msg_left)
+        ebws.right_wheel_status_publisher.publish(msg_right)        
+        
+
 
         retrieveBenchmarkConfiguration(ebws)
-        #if benchmarkConfigurationHasChanged(ebws):
-        #    if ebws.current_door_opening_side is not None: 
-        #        restartSim(ebws)
 
         r.sleep()
 
@@ -202,61 +152,17 @@ def handle_beast_trolley_dummy_srv(req):  #TODO CHECK VINCENZO
     print("Handled dummy service")
     return SetStiffness.srvResponse(True, "")
 
-
 def listener(self):
-#    rospy.init_node('eurobench_worldstate_provider', anonymous=True)
     image_camera = rospy.Subscriber("sensor_msgs/Image", Image, callback)
-    
-
-def getTrolleyPosition(): 
-    try:
-        get_model_properties = rospy.ServiceProxy('/gazebo/get_model_properties', GetModelProperties)
-    except rospy.ServiceException, e:
-        print "ServiceProxy failed: %s"%e
-        exit(0)
-    model_prop = get_model_properties("door_simple")
-    try:
-        get_door_joint_props = rospy.ServiceProxy('/gazebo/get_joint_properties', GetJointProperties)
-    except rospy.ServiceException, e:
-        print "ServiceProxy failed: %s"%e
-        exit(0)
-    if VERBOSE: print('---------- door aperture ---------')
-    joint_prop = get_door_joint_props('joint_frame_door')
-    if VERBOSE: print(joint_prop.position[0])
-   
-    return joint_prop.position[0]
-
-
-def getHandlePosition():
-    try:
-        get_model_properties = rospy.ServiceProxy('/gazebo/get_model_properties', GetModelProperties)
-    except rospy.ServiceException, e:
-        print "ServiceProxy failed: %s"%e
-        exit(0)
-    model_prop = get_model_properties("pushcart")
-    try:
-        get_door_joint_props = rospy.ServiceProxy('/gazebo/get_joint_properties', GetJointProperties)
-    except rospy.ServiceException, e:
-        print "ServiceProxy failed: %s"%e
-        exit(0)
-    joint_prop_handle = get_door_joint_props('joint_door_lever')
-    if VERBOSE: 
-        print('---------- handle position ---------')
-    if VERBOSE: 
-        print(joint_prop_handle.position[0])
-        
-    getTrolleyPosition()
-        
-    return joint_prop_handle.position[0]
 
 def getTrolleyPosition():
     try:
         model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
-        resp_coordinates = model_coordinates('pushcart::cart_front_steer', 'chassis')
-        print '\n'
-        print 'Status.success = ', resp_coordinates.success
-        print("---- Pushcart pose \n: " + str(resp_coordinates.pose.position))
-        #print("Quaternion of X : " + str(resp_coordinates.pose.orientation.x))
+        resp_coordinates = model_coordinates('pushcart', '')
+        if VERBOSE:
+            print '\n'
+            print 'Status.success = ', resp_coordinates.success
+            print("---- Pushcart pose \n: " + str(resp_coordinates.pose.position))
 
     except rospy.ServiceException as e:
         rospy.loginfo("Get Model State service call failed:  {0}".format(e))
@@ -266,15 +172,25 @@ def getTrolleyPosition():
 
 def retrieveBenchmarkConfiguration(ebws):    # Based on the currently selected benchmark type
     try:
+        #rospy.wait_for_service('beast/gui/benchmark_params')
         get_benchmark_params = rospy.ServiceProxy('beast/gui/benchmark_params', BeastBenchmarkParams)
     except rospy.ServiceException, e:
         print "ServiceProxy failed: %s"%e
         exit(0)
     response = get_benchmark_params()
-    ebws.stiffness = response.stiffness
+    ebws.disturbance_type = response.disturbance_type
+    ebws.start_already_gripping = response.start_already_gripping
+    ebws.load = response.load
     if VERBOSE:
         print "\n---- trolley stiffness from gui:"
-        print ebws.stiffness
+        print ebws.disturbance_type
+        
+        print "\n---- trolley start_already_gripping from gui:"
+        print ebws.start_already_gripping
+        
+        print "\n---- trolley load from gui:"
+        print ebws.load
+        
 
 
 def benchmarkConfigurationHasChanged(ebws):
@@ -339,16 +255,14 @@ def restartSim(ebws):
     ebws.launch = roslaunch.parent.ROSLaunchParent(uuid, [launch_file])
     ebws.launch.start()
 
-    
-
 
 def main(args):
      ebws =  beast_simulation_state_collector()
-     rospy.init_node('beast_simulation_state_collector', anonymous=True) #CHECK IF REMOVE 'PROVIDER'
+     rospy.init_node('beast_simulation_state_collector', anonymous=True) 
      
      listener(ebws)
 
-     s = rospy.Service('/beast/trolley/set_stiffness', SetStiffness, handle_beast_trolley_dummy_srv) 
+     s = rospy.Service('/beast_cart/reset_encoders', ResetEncoders, handle_beast_trolley_dummy_srv) 
      print ("service beast/trolley initialized in beast_simulation_state_collector")    
 
      try:
@@ -356,7 +270,6 @@ def main(args):
          rospy.spin()
      except KeyboardInterrupt:
            print ("Shutting down ROS madrob_simulation_state_collector module")
-
 
 
 if __name__ == '__main__':
