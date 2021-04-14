@@ -39,18 +39,11 @@ class beast_simulation_state_collector:
         self.right_vel = 0.0
         self.last_time_in_sec = 0.0        
         
-        self.name = ""
-        self.jointsAng = 0.0 
-        self.jointsVel = 0.0
-        
         self.left_wheel_status_publisher = rospy.Publisher('/beast_cart/left/wheel_status',
                                         Wheel, queue_size=1)            
                                                          
         self.right_wheel_status_publisher = rospy.Publisher('/beast_cart/right/wheel_status',
-                                        Wheel, queue_size=1)            
-                   
-        self.right_wheel_status = rospy.Publisher('/beast_cart/right/wheel_status',
-                                        Handle, queue_size=1)            
+                                        Wheel, queue_size=1)                    
         
         if START_SIM:
              self.startSim()           
